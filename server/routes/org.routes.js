@@ -1,5 +1,8 @@
 import { Router } from "express";
-import { authMiddleware } from "../middlewares/auth.middleware.js";
+import {
+  authMiddleware,
+  orgMemberMiddleware,
+} from "../middlewares/auth.middleware.js";
 import {
   createOrgController,
   getAllOrgsController,
@@ -8,6 +11,7 @@ import {
   updateOrgByIdController,
   addMemberController,
   removeMemberController,
+  getAllBoardsController,
 } from "../controllers/index.js";
 
 const orgRouter = Router();
@@ -22,4 +26,6 @@ orgRouter.patch("/:orgId", updateOrgByIdController);
 orgRouter.post("/:orgId/members", addMemberController);
 orgRouter.delete("/:orgId/members/:userId", removeMemberController);
 
+// orgRouter.use(orgMemberMiddleware);
+orgRouter.get("/:orgId/boards", orgMemberMiddleware, getAllBoardsController);
 export default orgRouter;
