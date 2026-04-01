@@ -2,7 +2,6 @@ import organization from "../db/org.db.js";
 import User from "../db/user.db.js";
 
 export const createOrgController = async (req, res) => {
-  if (!req.user) return res.status(401).json({ error: "Unauthorized" });
   const { name, description, type = "public" } = req.body;
   if (!name?.trim() || !description?.trim()) {
     return res.status(400).json({ error: "Missing name or description" });
@@ -21,7 +20,8 @@ export const createOrgController = async (req, res) => {
       return res.status(400).json({ error: "Org name already exists" });
     }
     const user = await User.findById(req.user.id);
-    await User.update(req.user.id, { orgId: [...user.orgId, id] });
+    const orgIdList = user.orgId ?? [];
+    await User.update(req.user.id, { orgId: [...orgIdList, id] });
     const org = await organization.create(data);
     return res
       .status(201)
@@ -32,7 +32,6 @@ export const createOrgController = async (req, res) => {
 };
 
 export const getAllOrgsController = async (req, res) => {
-  if (!req.user) return res.status(401).json({ error: "Unauthorized" });
   try {
     const orgs = await organization.findByUserId(req.user.id);
     return res
@@ -44,7 +43,6 @@ export const getAllOrgsController = async (req, res) => {
 };
 
 export const getOrgByIdController = async (req, res) => {
-  if (!req.user) return res.status(401).json({ error: "Unauthorized" });
   const { orgId } = req.params;
   try {
     const org = await organization.findById(orgId);
@@ -84,8 +82,8 @@ export const deleteOrgByIdController = async (req, res) => {
 };
 
 export const updateOrgByIdController = async (req, res) => {
-  if (!req.user) return res.status(401).json({ error: "Unauthorized" });
   const { orgId } = req.params;
+
   try {
     const org = await organization.findById(orgId);
     if (!org) return res.status(404).json({ error: "Org not found" });
@@ -98,7 +96,13 @@ export const updateOrgByIdController = async (req, res) => {
     if (!isAdmin) return res.status(403).json({ error: "don't have access" });
 
     const { id: _id, members: _members, ...safeData } = req.body;
-    const updatedOrg = await organization.update(orgId, { ...org, ...data });
+    const updatedOrg = await organization.update(orgId, {
+      ...org,
+      ...safeData,
+    });
+
+    if (!updatedOrg) return res.status(404).json({ error: "Org not found" });
+
     return res
       .status(200)
       .json({ message: "Org updated successfully", data: updatedOrg });
@@ -110,7 +114,10 @@ export const updateOrgByIdController = async (req, res) => {
 export const addMemberController = async (req, res) => {
   if (!req.user) return res.status(401).json({ error: "Unauthorized" });
   const { orgId } = req.params;
-  const { userId, role } = req.body;
+  const { username, role } = req.body;
+  if (!username?.trim() || role == null || String(role).trim() === "") {
+    return res.status(400).json({ error: "Missing username or role" });
+  }
   try {
     const org = await organization.findById(orgId);
     if (!org) return res.status(404).json({ error: "Org not found" });
@@ -122,18 +129,27 @@ export const addMemberController = async (req, res) => {
     const isAdmin = currentUser.role === "admin";
     if (!isAdmin) return res.status(403).json({ error: "don't have access" });
 
-    await organization.addMember(orgId, userId, role);
-    return res
-      .status(200)
-      .json({ message: "Member added successfully", data: org });
+    const userToAdd = await User.findByUsername(username.trim());
+    if (!userToAdd) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    await organization.addMember(orgId, userToAdd.id, role);
+    const updatedOrg = await organization.findById(orgId);
+    return res.status(200).json({
+      message: "Member added successfully",
+      data: updatedOrg,
+    });
   } catch (error) {
     return res.status(500).json({ error: "Failed to add member" });
   }
 };
 
 export const removeMemberController = async (req, res) => {
-  if (!req.user) return res.status(401).json({ error: "Unauthorized" });
   const { orgId, userId } = req.params;
+  if (!userId?.trim()) {
+    return res.status(400).json({ error: "Missing userId" });
+  }
   try {
     const org = await organization.findById(orgId);
     if (!org) return res.status(404).json({ error: "Org not found" });
@@ -146,11 +162,10 @@ export const removeMemberController = async (req, res) => {
     if (!isAdmin) return res.status(403).json({ error: "don't have access" });
 
     await organization.removeMember(orgId, userId);
-    return res
-      .status(200)
-      .json({ message: "Member removed successfully", data: org });
+    return res.status(200).json({ message: "Member removed successfully" });
   } catch (error) {
-    return res.status(500).json({ error: "Failed to remove member" });
+    console.error("Error removing member: ", error.message);
+    return res.status(500).json({ message: "Failed to remove member", error });
   }
 };
 

@@ -1,4 +1,4 @@
-import { deleteData, overwriteData, readData, writeData } from "./filedb.js";
+import { deleteData, replaceData, readData, insertData } from "./filedb.js";
 
 const Org = {
   findById: async (id) => {
@@ -12,12 +12,11 @@ const Org = {
   findByName: async (userId, name) => {
     const data = await readData("orgs");
     return data.orgs.filter(
-      (org) =>
-        org.name === name && org.members.some((m) => m.userId === userId),
+      (org) => org.name === name && org.members.some((m) => m.userId === userId)
     );
   },
   create: async (data) => {
-    await writeData("orgs", data);
+    await insertData("orgs", data);
     return data;
   },
 
@@ -35,13 +34,14 @@ const Org = {
     }
 
     org.members.push({ userId, role });
+    user.orgId = user.orgId ?? [];
     user.orgId.push(orgId);
 
     const updatedUsers = userData.users.map((u) =>
-      u.id === userId ? user : u,
+      u.id === userId ? user : u
     );
-    await overwriteData("orgs", data.orgs);
-    await overwriteData("users", updatedUsers);
+    await replaceData("orgs", data.orgs);
+    await replaceData("users", updatedUsers);
   },
   removeMember: async (orgId, userId) => {
     const data = await readData("orgs");
@@ -63,13 +63,13 @@ const Org = {
     }
 
     org.members = org.members.filter((m) => m.userId !== userId);
-    user.orgId = user.orgId.filter((o) => o !== orgId);
+    user.orgId = (user.orgId ?? []).filter((o) => o !== orgId);
 
     const updatedUsers = userData.users.map((u) =>
-      u.id === userId ? user : u,
+      u.id === userId ? user : u
     );
-    await overwriteData("orgs", data.orgs);
-    await overwriteData("users", updatedUsers);
+    await replaceData("orgs", data.orgs);
+    await replaceData("users", updatedUsers);
   },
   findByUserId: async (userId) => {
     const userData = await readData("users");
@@ -77,25 +77,27 @@ const Org = {
     if (!user) throw new Error(`User ${userId} not found`);
 
     const orgData = await readData("orgs");
-    const orgs = orgData.orgs.filter((org) => user.orgId.includes(org.id));
+    const ids = user.orgId ?? [];
+    const orgs = orgData.orgs.filter((org) => ids.includes(org.id));
     return orgs;
   },
   update: async (id, newData) => {
     const data = await readData("orgs");
-    const updated = data.orgs.map((org) =>
-      org.id === id ? { ...org, ...newData } : org,
-    );
-    await overwriteData("orgs", updated);
-    return updated;
+    const idx = data.orgs.findIndex((org) => org.id === id);
+    if (idx === -1) return null;
+    const merged = { ...data.orgs[idx], ...newData };
+    const updated = data.orgs.map((org) => (org.id === id ? merged : org));
+    await replaceData("orgs", updated);
+    return merged;
   },
   delete: async (id) => {
     await deleteData("orgs", id);
     const userData = await readData("users");
     const updatedUsers = userData.users.map((user) => ({
       ...user,
-      orgId: user.orgId.filter((o) => o !== id),
+      orgId: (user.orgId ?? []).filter((o) => o !== id),
     }));
-    await overwriteData("users", updatedUsers);
+    await replaceData("users", updatedUsers);
   },
 };
 

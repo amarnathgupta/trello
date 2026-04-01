@@ -22,11 +22,12 @@ export const createBoardController = async (req, res) => {
 };
 
 export const getAllBoardsController = async (req, res) => {
-  const { orgId } = req.params;
+  const { orgId } = req.query;
+  if (!orgId) {
+    return res.status(400).json({ error: "Missing orgId" });
+  }
   try {
     const boards = await Board.findAll(orgId);
-    if (!(boards.length > 0))
-      return res.status(404).json({ error: "Boards not found" });
     return res
       .status(200)
       .json({ message: "Boards fetched successfully", data: boards });
@@ -39,9 +40,11 @@ export const getBoardByIdController = async (req, res) => {
   const { boardId } = req.params;
   if (!boardId.trim())
     return res.status(400).json({ error: "Board id is required" });
+
   try {
     const board = await Board.findById(boardId);
     if (!board) return res.status(404).json({ error: "Board not found" });
+
     return res
       .status(200)
       .json({ message: "Board fetched successfully", data: board });
@@ -75,12 +78,10 @@ export const updateBoardByIdController = async (req, res) => {
     const board = await Board.findById(boardId);
     if (!board) return res.status(404).json({ error: "Board not found" });
     const updated = await Board.update(boardId, { title });
-    return res
-      .status(200)
-      .json({
-        message: "Board updated successfully",
-        data: { ...board, title },
-      });
+    return res.status(200).json({
+      message: "Board updated successfully",
+      data: { ...board, title },
+    });
   } catch (error) {
     return res.status(500).json({ error: "Failed to update board" });
   }

@@ -1,4 +1,10 @@
 import fs from "fs/promises";
+import path from "path";
+import { fileURLToPath } from "url";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+// Project root /data — cwd se independent (warna server/ se node chalane par ./data galat jagah jaata hai)
+const DATA_DIR = path.join(__dirname, "../../data");
 
 const writeQueue = {};
 
@@ -12,28 +18,26 @@ async function enqueueWrite(filename, fn) {
 }
 
 export async function readData(filename) {
+  const key = filename.toLowerCase();
   try {
-    const data = await fs.readFile(
-      `./data/${filename.toLowerCase()}.json`,
-      "utf-8",
-    );
+    const data = await fs.readFile(path.join(DATA_DIR, `${key}.json`), "utf-8");
     return JSON.parse(data);
   } catch (error) {
     return {
-      [filename.toLowerCase()]: [],
+      [key]: [],
     };
   }
 }
 
-export async function writeData(filename, data) {
+export async function insertData(filename, data) {
   const key = filename.toLowerCase();
 
   return enqueueWrite(key, async () => {
     const res = await readData(filename);
     const records = res[key];
     records.push(data);
-    return await fs.writeFile(
-      `./data/${filename.toLowerCase()}.json`,
+    await fs.writeFile(
+      path.join(DATA_DIR, `${key}.json`),
       JSON.stringify({ [key]: records }, null, 2),
     );
   });
@@ -44,27 +48,19 @@ export async function deleteData(filename, id) {
 
   return enqueueWrite(key, async () => {
     const res = await readData(key);
-    let deleted;
-    const filtered = res[key].filter((record) => {
-      if (record.id === id) {
-        deleted = record;
-        return false;
-      }
-      return true;
-    });
+    const filtered = res[key].filter((record) => record.id != id);
     await fs.writeFile(
-      `./data/${filename.toLowerCase()}.json`,
+      path.join(DATA_DIR, `${key}.json`),
       JSON.stringify({ [key]: filtered }, null, 2),
     );
-    return deleted;
   });
 }
 
-export async function overwriteData(filename, data) {
+export async function replaceData(filename, data) {
   const key = filename.toLowerCase();
   return enqueueWrite(key, async () => {
     return await fs.writeFile(
-      `./data/${filename.toLowerCase()}.json`,
+      path.join(DATA_DIR, `${key}.json`),
       JSON.stringify({ [key]: data }, null, 2),
     );
   });

@@ -13,8 +13,9 @@ export const signupController = async (req, res) => {
     if (existingUser) {
       return res.status(400).json({ error: "Username already exists" });
     }
+
     const hashedPassword = await bcrypt.hash(password, 10);
-    const user = await User.create({
+    await User.create({
       id: crypto.randomUUID(),
       username,
       password: hashedPassword,
@@ -39,10 +40,12 @@ export const signinController = async (req, res) => {
     if (!user) {
       return res.status(401).json({ error: "Invalid username or password" });
     }
+
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
       return res.status(401).json({ error: "Invalid username or password" });
     }
+
     const payload = {
       id: user.id,
       username: user.username,
@@ -50,7 +53,15 @@ export const signinController = async (req, res) => {
     const token = jwt.sign(payload, process.env.JWT_SECRET, {
       expiresIn: "1d",
     });
-    res.status(200).json({ message: "Login successful", data: token });
+
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+      maxAge: 24 * 60 * 60 * 1000, // 1 Day
+    });
+
+    res.status(200).json({ message: "Login successful" });
   } catch (error) {
     res.status(500).json({ error: "Failed to login" });
   }

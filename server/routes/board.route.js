@@ -23,19 +23,19 @@ boardRouter.post(
   "/",
   orgMemberMiddleware,
   requireRole("admin"),
-  createBoardController,
+  createBoardController
 );
 boardRouter.delete(
   "/:boardId",
   orgMemberMiddleware,
   requireRole("admin"),
-  deleteBoardByIdController,
+  deleteBoardByIdController
 );
 boardRouter.patch(
   "/:boardId",
   orgMemberMiddleware,
   requireRole("admin"),
-  updateBoardByIdController,
+  updateBoardByIdController
 );
 
 export default boardRouter;

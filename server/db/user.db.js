@@ -1,4 +1,4 @@
-import { deleteData, overwriteData, readData, writeData } from "./filedb.js";
+import { deleteData, replaceData, readData, insertData } from "./filedb.js";
 
 const User = {
   findById: async (id) => {
@@ -13,7 +13,7 @@ const User = {
     return await readData("users");
   },
   create: async (data) => {
-    await writeData("users", data);
+    await insertData("users", data);
     return data;
   },
   delete: async (id) => {
@@ -24,7 +24,7 @@ const User = {
     const updated = data.users.map((user) =>
       user.id === id ? { ...user, ...newData } : user,
     );
-    await overwriteData("users", updated);
+    await replaceData("users", updated);
   },
 };
 

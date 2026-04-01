@@ -1,8 +1,8 @@
-import { deleteData, overwriteData, readData, writeData } from "./filedb.js";
+import { deleteData, replaceData, readData, insertData } from "./filedb.js";
 
 const Board = {
   create: async (data) => {
-    await writeData("boards", data);
+    await insertData("boards", data);
     return data;
   },
   findAll: async (orgId) => {
@@ -14,16 +14,12 @@ const Board = {
     const data = await readData("boards");
     return data.boards.find((board) => board.id === id);
   },
-  findByOrgId: async (orgId) => {
-    const data = await readData("boards");
-    return data.boards.filter((board) => board.orgId === orgId);
-  },
   update: async (id, newData) => {
     const data = await readData("boards");
     const updated = data.boards.map((board) =>
       board.id === id ? { ...board, ...newData } : board,
     );
-    await overwriteData("boards", updated);
+    await replaceData("boards", updated);
   },
   delete: async (id) => {
     await deleteData("boards", id);
