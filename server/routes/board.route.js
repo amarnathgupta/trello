@@ -11,31 +11,23 @@ import {
   getBoardByIdController,
   updateBoardByIdController,
 } from "../controllers/index.js";
+import listRouter from "./list.route.js";
 
-const boardRouter = Router();
+const boardRouter = Router({ mergeParams: true });
 
-boardRouter.use(authMiddleware);
+boardRouter.use(orgMemberMiddleware);
 
-boardRouter.get("/", orgMemberMiddleware, getAllBoardsController);
-boardRouter.get("/:boardId", orgMemberMiddleware, getBoardByIdController);
+boardRouter.use("/:boardId/lists", listRouter);
 
-boardRouter.post(
-  "/",
-  orgMemberMiddleware,
-  requireRole("admin"),
-  createBoardController
-);
+boardRouter.get("/", getAllBoardsController);
+boardRouter.get("/:boardId", getBoardByIdController);
+
+boardRouter.post("/", requireRole("admin"), createBoardController);
 boardRouter.delete(
   "/:boardId",
-  orgMemberMiddleware,
   requireRole("admin"),
-  deleteBoardByIdController
+  deleteBoardByIdController,
 );
-boardRouter.patch(
-  "/:boardId",
-  orgMemberMiddleware,
-  requireRole("admin"),
-  updateBoardByIdController
-);
+boardRouter.patch("/:boardId", requireRole("admin"), updateBoardByIdController);
 
 export default boardRouter;

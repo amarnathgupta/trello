@@ -13,10 +13,13 @@ import {
   removeMemberController,
   getAllBoardsController,
 } from "../controllers/index.js";
+import boardRouter from "./board.route.js";
 
 const orgRouter = Router();
 
 orgRouter.use(authMiddleware);
+
+orgRouter.use("/:orgId/boards", boardRouter);
 
 orgRouter.post("/", createOrgController);
 orgRouter.get("/", getAllOrgsController);
