@@ -31,4 +31,4 @@ app.listen(port, () => {
 // orgs.json         → { id, name, description, type(public/private), members: [{userId, role}] }
 // boards.json       → { id, title, orgId }
 // lists.json        → { id, title, boardId, order }
-// cards.json        → { id, title, listId, order }
+// cards.json → { id, title, description, listId, createdAt }

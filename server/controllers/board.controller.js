@@ -2,7 +2,10 @@ import Board from "../db/board.db.js";
 import Org from "../db/org.db.js";
 
 export const createBoardController = async (req, res) => {
-  const { title, orgId } = req.body;
+  const { title } = req.body;
+  const { orgId } = req.params;
+  if (!title?.trim())
+    return res.status(400).json({ error: "Title is required" });
   try {
     const org = await Org.findById(orgId);
     if (!org) return res.status(404).json({ error: "Org not found" });
@@ -22,7 +25,7 @@ export const createBoardController = async (req, res) => {
 };
 
 export const getAllBoardsController = async (req, res) => {
-  const { orgId } = req.query;
+  const { orgId } = req.params;
   if (!orgId) {
     return res.status(400).json({ error: "Missing orgId" });
   }

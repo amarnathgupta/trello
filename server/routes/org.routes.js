@@ -29,6 +29,4 @@ orgRouter.patch("/:orgId", updateOrgByIdController);
 orgRouter.post("/:orgId/members", addMemberController);
 orgRouter.delete("/:orgId/members/:userId", removeMemberController);
 
-// orgRouter.use(orgMemberMiddleware);
-orgRouter.get("/:orgId/boards", orgMemberMiddleware, getAllBoardsController);
 export default orgRouter;

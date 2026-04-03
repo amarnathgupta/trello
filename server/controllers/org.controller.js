@@ -6,6 +6,7 @@ export const createOrgController = async (req, res) => {
   if (!name?.trim() || !description?.trim()) {
     return res.status(400).json({ error: "Missing name or description" });
   }
+
   try {
     const id = crypto.randomUUID();
     const data = {
@@ -15,14 +16,19 @@ export const createOrgController = async (req, res) => {
       type,
       members: [{ userId: req.user.id, role: "admin" }],
     };
+
     const existingOrg = await organization.findByName(req.user.id, name);
     if (existingOrg.length > 0) {
       return res.status(400).json({ error: "Org name already exists" });
     }
+
     const user = await User.findById(req.user.id);
     const orgIdList = user.orgId ?? [];
+
     await User.update(req.user.id, { orgId: [...orgIdList, id] });
+
     const org = await organization.create(data);
+
     return res
       .status(201)
       .json({ message: "Org created successfully", data: org });
