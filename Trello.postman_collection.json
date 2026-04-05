@@ -1,0 +1,779 @@
+{
+  "info": {
+    "_postman_id": "55084c37-ceb5-43ef-b4bf-a63fff10fe46",
+    "name": "Trello",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "21896518"
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Signup",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"username\": \"amit\",\r\n  \"password\": \"123456\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/v1/auth/signup",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "signup"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Signin",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"username\": \"rahul\",\r\n  \"password\": \"123456\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/v1/auth/signin",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "signin"
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "description": "This folder contains the authentication endpoints for the API. It includes:\n\n- **Signup** (`POST /api/v1/auth/signup`) – Registers a new user account.\n- **Signin** (`POST /api/v1/auth/signin`) – Authenticates an existing user and initiates a session.\n\nUse these endpoints to manage user access before interacting with protected resources."
+    },
+    {
+      "name": "Org",
+      "item": [
+        {
+          "name": "Create org — POST",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"name\": \"MTomato \",\r\n  \"description\": \"Dummy org testing ke liye\",\r\n  \"type\": \"public\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/v1/orgs",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "v1",
+                "orgs"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List my orgs — GET",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/api/v1/orgs",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "v1",
+                "orgs"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Org by ID — GET",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/api/v1/orgs/<ORG_ID>",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "v1",
+                "orgs",
+                "<ORG_ID>"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Org update — PATCH (admin)",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"name\": \"Naya naam\",\r\n  \"description\": \"Updated description\",\r\n  \"type\": \"private\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/v1/orgs/<ORG_ID>",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "v1",
+                "orgs",
+                "<ORG_ID>"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Member add — POST (admin)",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"username\": \"amit\",\r\n  \"role\": \"member\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/v1/orgs/<ORG_ID>/members",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "v1",
+                "orgs",
+                "<ORG_ID>",
+                "members"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Member remove — DELETE (admin)",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/api/v1/orgs/<ORG_ID>/members/<USER_ID>",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "v1",
+                "orgs",
+                "<ORG_ID>",
+                "members",
+                "<USER_ID>"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Org delete — DELETE (admin)",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/api/v1/orgs/<ORG_ID>",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "v1",
+                "orgs",
+                "<ORG_ID>"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": " Org boards — GET",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/api/v1/orgs/<ORG_ID>/boards",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "v1",
+                "orgs",
+                "<ORG_ID>",
+                "boards"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List All Members",
+          "request": {
+            "method": "GET",
+            "header": []
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Board",
+      "item": [
+        {
+          "name": "List boards — GET (member)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/api/v1/boards/1c0158dc-d804-4620-9891-a6991d8a3c29",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "v1",
+                "boards",
+                "1c0158dc-d804-4620-9891-a6991d8a3c29"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create board — POST (admin)",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"title\": \"Sprint 1\",\r\n  \"orgId\": \"<ORG_ID>\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/v1/boards",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "v1",
+                "boards"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get one board — GET (member)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/api/v1/boards/<BOARD_ID>?orgId=1c0158dc-d804-4620-9891-a6991d8a3c29",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "v1",
+                "boards",
+                "<BOARD_ID>"
+              ],
+              "query": [
+                {
+                  "key": "orgId",
+                  "value": "1c0158dc-d804-4620-9891-a6991d8a3c29"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update board — PATCH (admin)",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"title\": \"Sprint 1 — renamed\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/v1/boards/<BOARD_ID>?orgId=1c0158dc-d804-4620-9891-a6991d8a3c29",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "v1",
+                "boards",
+                "<BOARD_ID>"
+              ],
+              "query": [
+                {
+                  "key": "orgId",
+                  "value": "1c0158dc-d804-4620-9891-a6991d8a3c29"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete board — DELETE (admin)",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/api/v1/boards/<BOARD_ID>?orgId=1c0158dc-d804-4620-9891-a6991d8a3c29",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "v1",
+                "boards",
+                "<BOARD_ID>"
+              ],
+              "query": [
+                {
+                  "key": "orgId",
+                  "value": "1c0158dc-d804-4620-9891-a6991d8a3c29"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "List",
+      "item": [
+        {
+          "name": "CREATE LIST",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"title\": \"Dummy\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/v1/orgs/<ORG_ID>/boards/<BOARD_ID>/lists",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "v1",
+                "orgs",
+                "<ORG_ID>",
+                "boards",
+                "<BOARD_ID>",
+                "lists"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET ALL LISTS (by boardId)",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/api/v1/orgs/<ORG_ID>/boards/<BOARD_ID>/lists",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "v1",
+                "orgs",
+                "<ORG_ID>",
+                "boards",
+                "<BOARD_ID>",
+                "lists"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET LIST BY ID",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/api/v1/orgs/<ORG_ID>/boards/<BOARD_ID>/lists/<LIST_ID>",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "v1",
+                "orgs",
+                "<ORG_ID>",
+                "boards",
+                "<BOARD_ID>",
+                "lists",
+                "<LIST_ID>"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "UPDATE LIST",
+          "request": {
+            "method": "GET",
+            "header": []
+          },
+          "response": []
+        },
+        {
+          "name": "DELETE LIST",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": ""
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/v1/orgs/<ORG_ID>/boards/<BOARD_ID>/lists/<LIST_ID>",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "v1",
+                "orgs",
+                "<ORG_ID>",
+                "boards",
+                "<BOARD_ID>",
+                "lists",
+                "<LIST_ID>"
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "description": "This folder contains all API endpoints for managing **Lists** within a board. Lists are organizational units that belong to a specific board under an organization. The following operations are supported:\n\n- **Create List** – Add a new list to a board (`POST`)\n- **Get All Lists** – Retrieve all lists associated with a given board (`GET`)\n- **Get List by ID** – Fetch the details of a specific list (`GET`)\n- **Update List** – Modify the properties of an existing list (`GET/PUT`)\n- **Delete List** – Remove a list from a board (`DELETE`)\n\nAll endpoints are scoped under `/api/v1/orgs/{ORG_ID}/boards/{BOARD_ID}/lists` and require valid organization and board identifiers."
+    },
+    {
+      "name": "Card",
+      "item": [
+        {
+          "name": "Create Card",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{ \r\n    \"title\": \"My First Card\", \r\n    \"description\": \"Testing\" \r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/v1/orgs/<ORG_ID>/boards/<BOARD_ID>/lists/<LIST_ID>/cards",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "v1",
+                "orgs",
+                "<ORG_ID>",
+                "boards",
+                "<BOARD_ID>",
+                "lists",
+                "<LIST_ID>",
+                "cards"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Cards",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/api/v1/orgs/<ORG_ID>/boards/<BOARD_ID>/lists/<LIST_ID>/cards",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "v1",
+                "orgs",
+                "<ORG_ID>",
+                "boards",
+                "<BOARD_ID>",
+                "lists",
+                "<LIST_ID>",
+                "cards"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Card By ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/api/v1/orgs/<ORG_ID>/boards/<BOARD_ID>/lists/<LIST_ID>/cards/<CARD_ID>",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "v1",
+                "orgs",
+                "<ORG_ID>",
+                "boards",
+                "<BOARD_ID>",
+                "lists",
+                "<LIST_ID>",
+                "cards",
+                "<CARD_ID>"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Card",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{ \"title\": \"Updated Title\", \"description\": \"Updated desc\" }",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/v1/orgs/<ORG_ID>/boards/<BOARD_ID>/lists/<LIST_ID>/cards/<CARD_ID>",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "v1",
+                "orgs",
+                "<ORG_ID>",
+                "boards",
+                "<BOARD_ID>",
+                "lists",
+                "<LIST_ID>",
+                "cards",
+                "<CARD_ID>"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Card",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/api/v1/orgs/<ORG_ID>/boards/<BOARD_ID>/lists/<LIST_ID>/cards/<CARD_ID>",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "v1",
+                "orgs",
+                "<ORG_ID>",
+                "boards",
+                "<BOARD_ID>",
+                "lists",
+                "<LIST_ID>",
+                "cards",
+                "<CARD_ID>"
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "description": "This folder contains all API endpoints for managing Cards within a specific List on a Board, scoped to an Organization. It covers the full lifecycle of a card, including:\n\n- **Create Card** – Add a new card to a list (`POST`)\n- **Get All Cards** – Retrieve all cards within a list (`GET`)\n- **Get Card By ID** – Fetch details of a specific card (`GET`)\n- **Update Card** – Modify an existing card's details (`PATCH`)\n- **Delete Card** – Remove a card from a list (`DELETE`)\n\nAll endpoints follow the base path: `/api/v1/orgs/{ORG_ID}/boards/{BOARD_ID}/lists/{LIST_ID}/cards`"
+    }
+  ]
+}
