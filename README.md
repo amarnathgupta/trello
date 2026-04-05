@@ -4,6 +4,8 @@ A full-stack project management application inspired by Trello, built with vanil
 
 ---
 
+demo: https://www.loom.com/share/31d3f1e16be049d5abb5dce78f869110
+
 ## Tech Stack
 
 - **Frontend** — HTML, Tailwind CSS, Vanilla JavaScript
