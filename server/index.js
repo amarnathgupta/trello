@@ -2,17 +2,18 @@ import dotenv from "dotenv";
 import path from "path";
 import { fileURLToPath } from "url";
 import express from "express";
+import { router } from "./routes/index.js";
+import cookieParser from "cookie-parser";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 dotenv.config({ path: path.join(__dirname, "../.env") });
-import { router } from "./routes/index.js";
-import cookieParser from "cookie-parser";
 
 const app = express();
 
 const port = process.env.PORT || 5000;
 
 app.use(express.json());
+app.use(express.static(path.join(__dirname, "../public")));
 app.use(cookieParser());
 
 app.get("/", (req, res) => {

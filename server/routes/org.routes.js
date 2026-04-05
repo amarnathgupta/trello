@@ -12,6 +12,7 @@ import {
   addMemberController,
   removeMemberController,
   getAllBoardsController,
+  getAllMembersController,
 } from "../controllers/index.js";
 import boardRouter from "./board.route.js";
 
@@ -28,5 +29,6 @@ orgRouter.delete("/:orgId", deleteOrgByIdController);
 orgRouter.patch("/:orgId", updateOrgByIdController);
 orgRouter.post("/:orgId/members", addMemberController);
 orgRouter.delete("/:orgId/members/:userId", removeMemberController);
+orgRouter.get("/:orgId/members", getAllMembersController);
 
 export default orgRouter;

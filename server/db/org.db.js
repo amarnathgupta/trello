@@ -12,7 +12,8 @@ const Org = {
   findByName: async (userId, name) => {
     const data = await readData("orgs");
     return data.orgs.filter(
-      (org) => org.name === name && org.members.some((m) => m.userId === userId)
+      (org) =>
+        org.name === name && org.members.some((m) => m.userId === userId),
     );
   },
   create: async (data) => {
@@ -38,7 +39,7 @@ const Org = {
     user.orgId.push(orgId);
 
     const updatedUsers = userData.users.map((u) =>
-      u.id === userId ? user : u
+      u.id === userId ? user : u,
     );
     await replaceData("orgs", data.orgs);
     await replaceData("users", updatedUsers);
@@ -66,7 +67,7 @@ const Org = {
     user.orgId = (user.orgId ?? []).filter((o) => o !== orgId);
 
     const updatedUsers = userData.users.map((u) =>
-      u.id === userId ? user : u
+      u.id === userId ? user : u,
     );
     await replaceData("orgs", data.orgs);
     await replaceData("users", updatedUsers);
@@ -98,6 +99,34 @@ const Org = {
       orgId: (user.orgId ?? []).filter((o) => o !== id),
     }));
     await replaceData("users", updatedUsers);
+  },
+  findMembers: async (orgId) => {
+    const data = await readData("orgs");
+    const org = data.orgs.find((org) => org.id === orgId);
+    if (!org) throw new Error(`Org ${orgId} not found`);
+
+    const userData = await readData("users");
+
+    const members = org.members.map((m) => {
+      const user = userData.users.find((u) => u.id === m.userId);
+
+      if (!user) {
+        console.warn("User not found for member:", m.userId);
+        return {
+          userId: m.userId,
+          username: "Unknown",
+          role: m.role,
+        };
+      }
+
+      return {
+        userId: user.id,
+        username: user.username,
+        role: m.role,
+      };
+    });
+
+    return { members };
   },
 };
 

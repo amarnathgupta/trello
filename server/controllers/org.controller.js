@@ -117,6 +117,19 @@ export const updateOrgByIdController = async (req, res) => {
   }
 };
 
+export const getAllMembersController = async (req, res) => {
+  const { orgId } = req.params;
+
+  try {
+    const org = await organization.findMembers(orgId);
+    if (!org) return res.status(404).json({ error: "Org not found" });
+
+    return res.status(200).json({ members: org.members });
+  } catch (error) {
+    return res.status(500).json({ error: "Failed to get members" });
+  }
+};
+
 export const addMemberController = async (req, res) => {
   if (!req.user) return res.status(401).json({ error: "Unauthorized" });
   const { orgId } = req.params;

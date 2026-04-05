@@ -66,3 +66,35 @@ export const signinController = async (req, res) => {
     res.status(500).json({ error: "Failed to login" });
   }
 };
+
+export const getMeController = async (req, res) => {
+  try {
+    // Assuming user is set in req.user by authentication middleware
+    if (!req.user) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+
+    // Optionally fetch fresh user info if needed
+    // const user = await User.findById(req.user.id);
+    // For now, return what's in req.user
+    res.status(200).json({
+      message: "User info fetched successfully",
+      data: {
+        id: req.user.id,
+        username: req.user.username,
+        orgId: req.user.orgId || [],
+      },
+    });
+  } catch (error) {
+    res.status(500).json({ error: "Failed to fetch user info" });
+  }
+};
+
+export const logoutController = async (req, res) => {
+  res.clearCookie("token", {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "strict",
+  });
+  res.status(200).json({ message: "Logout successful" });
+};

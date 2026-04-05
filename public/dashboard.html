@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Trello - Dashboard</title>
+    <link href="./css/style.css" rel="stylesheet" />
+  </head>
+  <body>
+    <nav id="navbar"></nav>
+    <main class="max-w-6xl mx-auto px-6 py-10">
+      <div class="bg-white rounded-2xl shadow-sm p-6 mb-6">
+        <h1 class="text-2xl font-bold text-gray-800">Your Organizations</h1>
+        <p class="text-gray-500 text-sm mt-1">
+          Select an organization to manage boards & members
+        </p>
+      </div>
+      <div
+        id="orgsGrid"
+        class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"
+      ></div>
+    </main>
+    <!-- ADD ORG MODAL -->
+    <div
+      id="orgModal"
+      class="fixed inset-0 flex items-center justify-center z-50 bg-black/50 bg-opacity-40 backdrop-blur-sm hidden"
+    >
+      <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md p-6 mx-4">
+        <h2 class="text-xl font-bold text-gray-800 mb-5">
+          Create Organization
+        </h2>
+
+        <div class="mb-4">
+          <label
+            class="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1"
+            >Name</label
+          >
+          <input
+            id="orgName"
+            type="text"
+            placeholder="Org name"
+            class="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#0052CC]"
+          />
+        </div>
+
+        <div class="mb-4">
+          <label
+            class="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1"
+            >Description</label
+          >
+          <textarea
+            id="orgDesc"
+            placeholder="describe here..."
+            rows="3"
+            class="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#0052CC] resize-none"
+          ></textarea>
+        </div>
+
+        <div class="mb-6">
+          <label
+            class="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1"
+            >Type</label
+          >
+          <select
+            id="orgType"
+            class="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#0052CC] bg-white"
+          >
+            <option value="public">Public</option>
+            <option value="private">Private</option>
+          </select>
+        </div>
+
+        <div
+          id="modalError"
+          class="hidden mb-4 text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-4 py-2"
+        ></div>
+
+        <div class="flex gap-3">
+          <button
+            onclick="closeModal()"
+            class="flex-1 py-2.5 border border-gray-200 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-50 transition"
+          >
+            Cancel
+          </button>
+          <button
+            onclick="createOrg()"
+            class="flex-1 py-2.5 bg-[#0052CC] hover:bg-[#0041A8] text-white rounded-lg text-sm font-semibold transition"
+          >
+            Create
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script src="./js/auth.js"></script>
+    <script src="./js/dashboard.js"></script>
+    <script src="./js/components/navbar.js"></script>
+    <script>
+      (async () => {
+        const user = await getMe();
+        if (!user) {
+          window.location.href = "/";
+        }
+        if (typeof loadOrgs === "function") {
+          await loadOrgs();
+        } else {
+          console.error("loadOrgs function not loaded from dashboard.js");
+        }
+      })();
+
+      const colors = [
+        "bg-blue-500",
+        "bg-purple-500",
+        "bg-green-500",
+        "bg-yellow-500",
+        "bg-red-500",
+        "bg-pink-500",
+        "bg-indigo-500",
+      ];
+
+      // This function will be called by loadOrgs (from dashboard.js)
+      window.renderOrgs = function (orgs) {
+        const grid = document.getElementById("orgsGrid");
+        if (!grid) return;
+        grid.innerHTML = "";
+
+        orgs.forEach((org, i) => {
+          const count = org.members?.length || 0;
+          const card = document.createElement("div");
+          card.className = `${colors[i % colors.length]} rounded-xl p-5 cursor-pointer hover:opacity-90 transition shadow-sm`;
+          card.innerHTML = `
+                    <div class="flex items-start justify-between mb-3">
+                      <div class="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center text-white font-bold text-lg">
+                        ${(org.name.charAt(0) || "").toUpperCase()}
+                      </div>
+                      <span class="text-xs text-white/70 bg-white/20 px-2 py-0.5 rounded-full">${org.type || "public"}</span>
+                    </div>
+                    <h3 class="text-white font-semibold text-base">${escapeHtml(org.name)}</h3>
+                    <p class="text-white/70 text-xs mt-1 line-clamp-2">${escapeHtml(org.description || "")}</p>
+                    <p class="text-white/60 text-xs mt-3"> ${count} member${count !== 1 ? "s" : ""}</p>
+                  `;
+          card.onclick = () => {
+            window.location.href = `./board.html?orgId=${org.id}`;
+          };
+          grid.appendChild(card);
+        });
+
+        // Add Organization card
+        const addCard = document.createElement("div");
+        addCard.className =
+          "border-2 border-dashed border-gray-300 rounded-xl p-5 cursor-pointer hover:border-[#0052CC] hover:bg-blue-50 transition flex flex-col items-center justify-center gap-2 min-h-[140px]";
+        addCard.innerHTML = `
+                  <div class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-400 text-2xl">+</div>
+                  <span class="text-sm text-gray-500 font-medium">Add Organization</span>
+                `;
+        addCard.onclick = () => openModal();
+        grid.appendChild(addCard);
+      };
+
+      // Helper to escape HTML
+      function escapeHtml(str) {
+        if (!str) return "";
+        return str.replace(/[&<>]/g, function (m) {
+          if (m === "&") return "&amp;";
+          if (m === "<") return "&lt;";
+          if (m === ">") return "&gt;";
+          return m;
+        });
+      }
+
+      // Load orgs after everything is ready
+      if (typeof loadOrgs === "function") {
+        loadOrgs();
+      } else {
+        console.error("loadOrgs function not loaded from dashboard.js");
+      }
+    </script>
+  </body>
+</html>
